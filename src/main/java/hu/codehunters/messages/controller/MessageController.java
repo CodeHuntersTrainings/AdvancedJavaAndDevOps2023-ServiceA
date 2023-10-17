@@ -14,17 +14,17 @@ import java.util.List;
 @RestController
 public class MessageController {
 
-    MessagesContainer messages = new MessagesContainer();
+    private final MessagesContainer messages = new MessagesContainer();
 
     /**
      * adds a new message
      * @return
      */
     @PostMapping(value = "/messages")
-    public ResponseEntity addMessageToList(@RequestBody Message message) {
+    public ResponseEntity<?> addMessageToList(@RequestBody Message message) {
 
         messages.addMessage(message);
-        return new ResponseEntity(HttpStatus.OK);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     /**
