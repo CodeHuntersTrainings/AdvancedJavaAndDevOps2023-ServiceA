@@ -19,4 +19,8 @@ public class MessageService {
         return messages.getMessages();
     }
 
+    public boolean removeMessages(List<Message> messages){
+        return messages.removeAll(messages);
+    }
+
 }

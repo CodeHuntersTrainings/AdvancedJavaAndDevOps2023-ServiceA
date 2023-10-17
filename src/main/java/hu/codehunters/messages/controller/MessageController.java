@@ -30,7 +30,6 @@ public class MessageController {
 
     /**
      * adds a new message
-     *
      * @return
      */
     @PostMapping(value = "/messages")
@@ -41,7 +40,6 @@ public class MessageController {
 
     /**
      * returns the list of the added messages
-     *
      * @return
      */
     @GetMapping("/messages")

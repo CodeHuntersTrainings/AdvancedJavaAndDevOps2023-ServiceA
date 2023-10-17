@@ -13,6 +13,7 @@ import java.util.stream.Collectors;
 @Service
 public class ReportService {
 
+    private static final String NON_ALPHA_NUM_REGEX = "[^a-zA-Z0-9]";
     private final MessageService messageService;
 
     @Autowired
@@ -29,45 +30,52 @@ public class ReportService {
     }
 
 
-    private List<Message> getMessagesLastMinute() {
+    public List<Message> getMessagesLastMinute() {
         LocalDateTime now = LocalDateTime.now();
         LocalDateTime oneMinuteEarlier = now.minusMinutes(1L);
 
         return getMessagesCreatedFromTo(oneMinuteEarlier, now);
     }
 
-    private int getNumberOfMessagesLastMinute() {
+    public int getNumberOfMessagesLastMinute() {
         LocalDateTime now = LocalDateTime.now();
-        LocalDateTime oneMinuteEerlier = now.minusMinutes(1L);
+        LocalDateTime oneMinuteEarlier = now.minusMinutes(1L);
 
         return (int) messageService.getMessages()
                 .stream()
                 .filter(
-                        m -> m.getCreationDateTime().isAfter(oneMinuteEerlier) &&
+                        m -> m.getCreationDateTime().isAfter(oneMinuteEarlier) &&
                                 m.getCreationDateTime().isBefore(now))
                 .count();
     }
 
-    private OptionalDouble getAverageLengthOfUniqueWordsInMessages(List<Message> messages) {
+    public OptionalDouble getAverageLengthOfUniqueWordsInMessages(List<Message> messages) {
         return messages.stream()
                 .map(Message::getMessage)
-                .map(m -> m.split("[\\w]"))
+                .map(m -> m.split(NON_ALPHA_NUM_REGEX))
                 .flatMap(Arrays::stream)
                 .mapToDouble(String::length)
                 .average();
     }
 
-    private List<Message> getMessagesCreatedFromTo(LocalDateTime from, LocalDateTime to) {
+    public List<Message> getMessagesCreatedFromTo(LocalDateTime from, LocalDateTime to) {
         return messageService.getMessages()
                 .stream()
                 .filter(m -> m.getCreationDateTime().isAfter(from) && m.getCreationDateTime().isBefore(to))
                 .collect(Collectors.toList());
     }
 
-    private Map<String, Integer> getWordOccurrences(List<Message> messages) {
+    public List<Message> getMessagesCreatedTill(LocalDateTime till) {
+        return messageService.getMessages()
+                .stream()
+                .filter(m -> !m.getCreationDateTime().isAfter(till))
+                .collect(Collectors.toList());
+    }
+
+    public Map<String, Integer> getWordOccurrences(List<Message> messages) {
         return messages.stream()
                 .map(Message::getMessage)
-                .map(m -> m.split("[\\w]"))
+                .map(m -> m.split(NON_ALPHA_NUM_REGEX))
                 .flatMap(Arrays::stream)
                 .collect(Collectors.toMap(
                         k -> k,

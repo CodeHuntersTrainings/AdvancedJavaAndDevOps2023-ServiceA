@@ -1,11 +1,17 @@
 package hu.codehunters.messages.model;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-public class Stats {
+public class Stats implements Serializable {
+    @JsonProperty("posted_messages")
     private final int postedMessages;
+    @JsonProperty("average_length")
     private final double averageLength;
 
     private final List<WordOccurrence> occurrences;
@@ -27,4 +33,15 @@ public class Stats {
         return occurrences.entrySet().stream().map(WordOccurrence::new).collect(Collectors.toList());
     }
 
+    public int getPostedMessages() {
+        return postedMessages;
+    }
+
+    public double getAverageLength() {
+        return averageLength;
+    }
+
+    public List<WordOccurrence> getOccurrences() {
+        return new ArrayList<>(occurrences);
+    }
 }

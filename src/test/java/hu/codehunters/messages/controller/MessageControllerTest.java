@@ -8,6 +8,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import java.util.Queue;
@@ -123,4 +124,36 @@ public class MessageControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(content().json(testMessages));
     }
+
+    @Test
+    public void testStats() throws Exception {
+        // add messages
+        mvc.perform(MockMvcRequestBuilders
+                        .post("/messages")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"message\": \"test message1\"}")
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+
+        mvc.perform(MockMvcRequestBuilders
+                        .post("/messages")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"message\": \"test:message2\"}")
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+
+
+        String stats="{\"posted_messages\": 2,\n" +
+                "  \"average_length\": 6.0,\n" +
+                "  \"occurrences\": [\n" +
+                "    {\"word\": \"test\", \"count\": 2},\n" +
+                "    {\"word\": \"message1\", \"count\": 1},\n" +
+                "    {\"word\": \"message2\", \"count\": 1}\n" +
+                "  ]\n" +
+                "}";
+        mvc.perform(MockMvcRequestBuilders.get("/stats"))
+                .andExpect(status().isOk())
+                .andExpect(content().json((stats)));
+    }
+
 }
