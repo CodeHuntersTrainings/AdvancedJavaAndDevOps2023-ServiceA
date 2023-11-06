@@ -5,13 +5,23 @@ import java.util.List;
 
 public class MessagesContainer {
 
-    List<Message> messages = new ArrayList<>();
+    private final List<Message> messages = new ArrayList<>();
+
+    private final Object readLock = new Object();
 
     public void addMessage(Message message) {
-        messages.add(message);
+        synchronized (messages) {
+            messages.add(message);
+            messages.notifyAll();
+        }
     }
 
     public List<Message> getMessages() {
-        return messages;
+        List<Message> readMessages;
+        synchronized (readLock) {
+            readMessages = messages;
+            readLock.notifyAll();
+            return readMessages;
+        }
     }
 }
