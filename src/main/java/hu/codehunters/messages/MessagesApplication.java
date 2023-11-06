@@ -3,10 +3,12 @@ package hu.codehunters.messages;
 import com.sun.net.httpserver.HttpServer;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.scheduling.annotation.EnableScheduling;
 
 import java.io.OutputStream;
 import java.net.InetSocketAddress;
 
+@EnableScheduling
 @SpringBootApplication
 public class MessagesApplication {
 
